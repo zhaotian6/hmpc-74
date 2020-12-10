@@ -11,7 +11,7 @@
         <el-input v-model="form.code" placeholder="请输入验证码" ></el-input>
       </el-form-item >
       <el-form-item class="agree" prop="agree">
-        <el-checkbox  v-model="form.checked">我已阅读用户协议和隐私条款</el-checkbox>
+        <el-checkbox  v-model="form.agree">我已阅读用户协议和隐私条款</el-checkbox>
       </el-form-item>
       <el-form-item>
         <el-button type="primary" class="btn1" @click="login" >登录</el-button>
@@ -21,6 +21,7 @@
 </template>
 
 <script>
+import axios from 'axios'
 export default {
   // 方便开发者工具显示
   name: 'Login',
@@ -29,7 +30,7 @@ export default {
       form: {
         mobile: '',
         code: '',
-        agree: false
+        agree: true
       },
       rules: {
         mobile: [
@@ -56,6 +57,28 @@ export default {
           trigger: 'change'
         }
       ]
+    }
+  },
+  methods: {
+    login () {
+      this.$refs.form.validate().then(() => {
+        console.log('校验成功了')
+      }).catch(() => {
+        console.log('校验失败')
+      })
+      if (!this.form.agree) {
+        this.$message({
+          message: '请同意用户许可',
+          type: 'error',
+          showClose: true
+        })
+        return
+      }
+      axios.post('/mp/v1_0/authorizations', this.form).then(e => {
+        this.$message.success('登录成功')
+      }).catch(e => {
+        this.$message.error('登录失败, 手机号或者验证码错误')
+      })
     }
   }
 }
