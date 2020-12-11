@@ -1,5 +1,6 @@
 <template>
-  <div class="login">
+  <div class="add">
+    <div class="login">
     <div class="imgs">
       <img src="~@/assets/logo_index.png" alt="">
     </div>
@@ -18,18 +19,19 @@
       </el-form-item>
     </el-form>
   </div>
+  </div>
 </template>
 
 <script>
-import axios from 'axios'
+import { login } from '@/api/user'
 export default {
   // 方便开发者工具显示
   name: 'Login',
   data () {
     return {
       form: {
-        mobile: '',
-        code: '',
+        mobile: '13911111111',
+        code: '246810',
         agree: true
       },
       rules: {
@@ -74,8 +76,10 @@ export default {
         })
         return
       }
-      axios.post('/mp/v1_0/authorizations', this.form).then(e => {
+      login(this.form.mobile, this.form.code).then(res => {
         this.$message.success('登录成功')
+        localStorage.setItem('token', res.data.data.token)
+        this.$router.push('/')
       }).catch(e => {
         this.$message.error('登录失败, 手机号或者验证码错误')
       })
@@ -84,10 +88,11 @@ export default {
 }
 </script>
 
-<style lang='less'>
-  html{
+<style lang='less' scoped>
+  .add{
     width: 100%;
-    background: url("~@/assets/login_bg.jpg") no-repeat;
+    height: 100%;
+    background: url('../../assets/login_bg.jpg') no-repeat;
     .login{
       width: 400px;
       height: 345px;
@@ -98,8 +103,9 @@ export default {
       top: 0;
       bottom: 0;
       right: 0;
-      .el-form-item__content{
-        margin: 0 50px;
+      .el-form{
+        margin: 40px;
+        margin-top: 0px;
       }
       .btn1{
         width: 100%;
