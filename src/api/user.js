@@ -9,12 +9,9 @@ export function login (mobile, code) {
     }
   })
 }
-export function reqUserInfo () {
+export function layout () {
   return axios({
     method: 'get',
-    url: '/mp/v1_0/user/profile',
-    headers: {
-      Authorization: 'Bearer ' + localStorage.getItem('token')
-    }
+    url: '/mp/v1_0/user/profile'
   })
 }

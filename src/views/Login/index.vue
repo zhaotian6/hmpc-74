@@ -24,6 +24,7 @@
 
 <script>
 import { login } from '@/api/user'
+import { setToken } from '../../utils/Storage'
 export default {
   // 方便开发者工具显示
   name: 'Login',
@@ -78,7 +79,7 @@ export default {
       }
       login(this.form.mobile, this.form.code).then(res => {
         this.$message.success('登录成功')
-        localStorage.setItem('token', res.data.data.token)
+        setToken(res.data.token)
         this.$router.push('/')
       }).catch(e => {
         this.$message.error('登录失败, 手机号或者验证码错误')

@@ -6,16 +6,16 @@
         <div class="logo" :class="{minLogo: isCollapse}" ></div>
         <!-- 菜单区域 -->
         <div>
-          <el-menu background-color="#002033" text-color="#fff" active-text-color="#ffd04b" :collapse="isCollapse" :collapse-transition="false">
-          <el-menu-item index="1">
+          <el-menu background-color="#002033" text-color="#fff" :default-active="$route.path" active-text-color="#ffd04b" :collapse="isCollapse" router :collapse-transition="false">
+          <el-menu-item index="/">
             <i class="el-icon-s-home"></i>
             <span slot="title">首页</span>
           </el-menu-item>
-          <el-menu-item index="2">
+          <el-menu-item index="/articles">
             <i class="el-icon-document"></i>
             <span slot="title">内容管理</span>
           </el-menu-item>
-          <el-menu-item index="3">
+          <el-menu-item index="/pictures">
             <i class="el-icon-picture"></i>
             <span slot="title">素材管理</span>
           </el-menu-item>
@@ -47,36 +47,56 @@
           </div>
           <el-dropdown>
           <div class="avatar-wrap">
-            <img class="avatar" src="@/assets/avatar.jpg" alt="">
-            <span>用户昵称</span>
+            <img class="avatar" src="user.photo" alt="">
+            <span>{{user.name}}</span>
             <i class="el-icon-arrow-down el-icon--right"></i>
           </div>
 
     <el-dropdown-menu slot="dropdown">
       <el-dropdown-item>设置</el-dropdown-item>
-      <el-dropdown-item>退出</el-dropdown-item>
+      <el-dropdown-item @click.native="getout">退出</el-dropdown-item>
     </el-dropdown-menu>
   </el-dropdown>
         </el-header>
         <!-- 内容部分 -->
-        <el-main>Main</el-main>
+        <el-main>
+          <router-view></router-view>
+        </el-main>
       </el-container>
     </el-container>
   </div>
 </template>
 
 <script>
-import { reqUserInfo } from '@/api/user'
+import { layout } from '@/api/user'
+import { removeToken } from '../../utils/Storage.js'
 export default {
   name: 'Layout',
   data () {
     return {
-      isCollapse: false
+      isCollapse: false,
+      user: {}
     }
   },
-  async created () {
-    const res = await reqUserInfo()
-    this.user = res.data.data
+  created () {
+    layout().then(res => {
+      this.user = res.data
+    }).catch(error => {
+      return console.log(error)
+    })
+  },
+  methods: {
+    getout () {
+      this.$confirm('确定要退出吗', '温馨提示', {
+        type: 'warning'
+      }).then(() => {
+        this.$router.push('/login')
+        removeToken('hmtt-74-token')
+        this.$message.success('退出成功')
+      }).catch(() => {
+        this.$message.error('退出失败')
+      })
+    }
   }
 }
 </script>
