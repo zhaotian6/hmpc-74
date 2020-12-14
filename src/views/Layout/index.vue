@@ -43,11 +43,11 @@
         <el-header>
           <div class="left">
             <i class="el-icon-s-fold" @click="isCollapse = !isCollapse" :class="isCollapse ? 'el-icon-s-unfold' : 'el-icon-s-fold'" ></i>
-            <span>黑马74期</span>
+            <span>黑马前端74期</span>
           </div>
           <el-dropdown>
           <div class="avatar-wrap">
-            <img class="avatar" src="user.photo" alt="">
+            <img class="avatar" :src="user.photo" alt="">
             <span>{{user.name}}</span>
             <i class="el-icon-arrow-down el-icon--right"></i>
           </div>
@@ -80,6 +80,7 @@ export default {
   },
   created () {
     layout().then(res => {
+      console.log(res)
       this.user = res.data
     }).catch(error => {
       return console.log(error)
