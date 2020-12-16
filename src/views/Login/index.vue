@@ -15,7 +15,7 @@
         <el-checkbox  v-model="form.agree">我已阅读用户协议和隐私条款</el-checkbox>
       </el-form-item>
       <el-form-item>
-        <el-button type="primary" class="btn1" @click="login" >登录</el-button>
+        <el-button type="primary" class="btn1" @click="login" :loading="loading1">登录</el-button>
       </el-form-item>
     </el-form>
   </div>
@@ -35,6 +35,7 @@ export default {
         code: '246810',
         agree: true
       },
+      loading1: false,
       rules: {
         mobile: [
           { required: true, message: '请输入手机号', trigger: ['blur', 'change'] },
@@ -64,6 +65,7 @@ export default {
   },
   methods: {
     login () {
+      this.loading1 = true
       this.$refs.form.validate().then(() => {
         console.log('校验成功了')
       }).catch(() => {
@@ -79,9 +81,11 @@ export default {
       }
       login(this.form.mobile, this.form.code).then(res => {
         this.$message.success('登录成功')
+        this.loading1 = false
         setToken(res.data.token)
         this.$router.push('/')
       }).catch(e => {
+        this.loading1 = false
         this.$message.error('登录失败, 手机号或者验证码错误')
       })
     }
