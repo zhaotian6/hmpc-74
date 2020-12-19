@@ -1,11 +1,16 @@
 import axios from 'axios'
 import { getToken } from '../utils/Storage.js'
 import JSONbig from 'json-bigint'
+export const baseURL = 'http://api-toutiao-web.itheima.net/'
 const aa = axios.create({
-  baseURL: 'http://api-toutiao-web.itheima.net/',
+  baseURL: baseURL,
   timeout: 3000,
   transformResponse: [function (data) {
-    return JSONbig.parse(data)
+    try {
+      return JSONbig.parse(data)
+    } catch {
+      return data
+    }
   }]
 })
 aa.interceptors.request.use(function (config) {

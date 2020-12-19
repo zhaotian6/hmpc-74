@@ -7,6 +7,7 @@ import articles from '../views/Layout/articles/index.vue'
 import pictures from '../views/Layout/pictures/index.vue'
 import home from '../views/Layout/home/index.vue'
 import notfound from '../views/notfound/index.vue'
+import addvue from '../views/Layout/pictures/add.vue'
 Vue.use(VueRouter)
 
 const routes = [
@@ -17,7 +18,9 @@ const routes = [
     children: [
       { path: '/', component: home },
       { path: '/articles', component: articles },
-      { path: '/pictures', component: pictures }
+      { path: '/pictures', component: pictures },
+      { path: '/addvue', component: addvue }
+
     ]
   },
   { path: '*', component: notfound }
