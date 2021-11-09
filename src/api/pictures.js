@@ -24,4 +24,14 @@ export function deletePicture (id) {
     url: '/mp/v1_0/user/images/' + id
   })
 }
+
 export const uploadUrl = baseURL + 'mp/v1_0/user/images'
+
+// 上传图片
+export function uploadPicture (fd) {
+  return axios({
+    method: 'POST',
+    url: '/mp/v1_0/user/images',
+    data: fd
+  })
+}

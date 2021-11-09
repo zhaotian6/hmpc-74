@@ -14,7 +14,7 @@
       <el-row :gutter="10">
         <el-col :span="4" v-for="item in images" :key="item.id">
           <el-image
-            src='item.url'
+            :src='item.url'
             style="width: 100%; height: 180px"
             fit="cover"
           ></el-image>
@@ -123,8 +123,8 @@ export default {
       this.fn()
     },
     beforeAvatarUpload (file) {
-      if (file.size >= 40 * 1024) {
-        this.$message.error('上传图片不能超过40KB')
+      if (file.size >= 2 * 1024 * 1024) {
+        this.$message.error('上传图片不能超过2m')
         return false
       }
       const allowList = ['image/gif', 'image/png']

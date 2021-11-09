@@ -28,3 +28,16 @@ export function addArticle (data) {
     data
   })
 }
+// 评论那个
+export function updateCommentStatus (article_id, allow_comment) {
+  return axios({
+    method: 'PUT',
+    url: '/mp/v1_0/comments/status',
+    params: {
+      article_id
+    },
+    data: {
+      allow_comment
+    }
+  })
+}

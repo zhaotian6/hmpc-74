@@ -21,9 +21,7 @@
           </el-radio-group>
         </el-form-item>
         <el-form-item label="频道">
-          <el-select v-model="form.channel_id" placeholder="请选择频道" clearable>
-            <el-option v-for="item in channels" :key="item.id" :label="item.name" :value="item.id"></el-option>
-          </el-select>
+          <channels v-model="form.channel_id"></channels>
         </el-form-item>
         <el-form-item label="日期">
           <el-date-picker
@@ -90,7 +88,7 @@
 </template>
 
 <script>
-import { getarticles, getchannels, delet } from '@/api/articles'
+import { getarticles, delet } from '@/api/articles'
 export default {
   data () {
     return {
@@ -100,7 +98,6 @@ export default {
         channel_id: null
       },
       tableData: [],
-      channels: [],
       total: 0,
       page: 1,
       per_page: 10,
@@ -109,9 +106,6 @@ export default {
   },
   created () {
     this.getlist()
-    getchannels().then(res => {
-      this.channels = res.data.channels
-    })
   },
   methods: {
     getlist () {

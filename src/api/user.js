@@ -15,3 +15,19 @@ export function layout () {
     url: '/mp/v1_0/user/profile'
   })
 }
+
+export function updateAvatar (fd) {
+  return axios({
+    method: 'patch',
+    url: '/mp/v1_0/user/photo',
+    data: fd
+  })
+}
+
+export function updateUserInfo (data) {
+  return axios({
+    method: 'patch',
+    url: '/mp/v1_0/user/profile',
+    data
+  })
+}

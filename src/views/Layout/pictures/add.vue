@@ -9,8 +9,7 @@
           <el-input v-model="form.title"></el-input>
         </el-form-item>
         <el-form-item label="内容" prop="content">
-          <quill-editor v-model="form.content"></quill-editor>
-
+          <quill-editor @blur="onBlur" @change="onBlur" v-model="form.content" :options="editorOption"></quill-editor>
         </el-form-item>
         <el-form-item label="封面">
           <el-radio-group v-model="form.cover.type">
@@ -20,12 +19,13 @@
             <el-radio :label="-1">自动</el-radio>
           </el-radio-group>
         </el-form-item>
-        <el-form-item label="频道" prop="channel_id">
-          <el-select v-model="form.channel_id" placeholder="请选择频道">
-            <el-option v-for="item in channels" :key="item.id" :label="item.name" :value="item.id"></el-option>
-          </el-select>
+        <el-form-item v-if="form.cover.type > 0" >
+          <cover v-for="(item, index ) in form.cover.type" :key="item" v-model="form.cover.images[index]" class="img1">
+          </cover>
         </el-form-item>
-
+        <el-form-item label="频道" prop="channel_id">
+          <channels v-model="form.channel_id" ></channels>
+        </el-form-item>
         <el-form-item>
           <el-button type="primary" @click="add">发表</el-button>
           <el-button>存入草稿</el-button>
@@ -36,7 +36,7 @@
 </template>
 
 <script>
-import { getchannels, addArticle } from '../../../api/articles'
+import { addArticle } from '@/api/articles'
 export default {
   name: 'AddArticle',
   data () {
@@ -49,28 +49,35 @@ export default {
           type: 0, // 封面图片的张数
           images: [] // 封面的地址
         },
-        channel_id: ''
+        channel_id: null
       },
-      channels: [],
       rules: {
         title: [
           { required: true, message: '请输入文章标题', trigger: 'blur' },
           { min: 5, max: 30, message: '长度在5到30之间', trigger: 'blur' }
         ],
         content: [
-          { required: true, message: '请输入文章内容', trigger: 'blur' },
-          { min: 20, max: 30000, message: '最少20个字', trigger: 'blur' }
+          { required: true, message: '请输入文章内容', trigger: ['blur', 'change'] },
+          {
+            validator:
+              (rule, value, callback) => {
+                value = this.filter(value)
+                if (value.length < 10) {
+                  callback(new Error('内容长度不能小于10'))
+                } else {
+                  callback()
+                }
+              }
+          }
         ],
         channel_id: [
           { required: true, message: '请选择文章频道', trigger: 'blur' }
         ]
+      },
+      editorOption: {
+        placeholder: '请输入内容'
       }
     }
-  },
-  async created () {
-    const res = await getchannels()
-    console.log(res)
-    this.channels = res.data.channels
   },
   methods: {
     add () {
@@ -86,6 +93,16 @@ export default {
           this.$message.error('发表失败')
         }
       })
+    },
+    onBlur () {
+      // 只对内容进行校验
+      this.$refs.form.validateField('content')
+    },
+    filter (text) {
+      var reg = /<[^<>]+>/g// 1、全局匹配g肯定忘记写,2、<>标签中不能包含标签实现过滤HTML标签
+      text = text.replace(reg, '')// 替换HTML标签
+      text = text.replace(/&nbsp;/ig, '')// 替换HTML空格
+      return text
     }
   }
 }
@@ -101,6 +118,10 @@ export default {
     .ql-editor {
       height: 300px;
     }
+  }
+  .img1 {
+    float: left;
+    padding-right: 5px;
   }
 }
 </style>
